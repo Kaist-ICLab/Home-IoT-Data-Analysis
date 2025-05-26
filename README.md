@@ -48,5 +48,3 @@ Includes:
 
 ## 📄 Citation
 To be added upon publication.
-
-For questions, contact youngji-koh@kaist.ac.kr
