@@ -1,0 +1,21 @@
+{
+    "shape": [
+        1157,
+        21
+    ],
+    "source_1": {
+        "source": 1,
+        "columns": [
+            "fitbit_caloreis",
+            "fitbit_distance",
+            "fitbit_heart_rate",
+            "fitbit_steps",
+            "fitbit_sleep_total",
+            "fitbit_sleep_deep",
+            "fitbit_sleep_light",
+            "fitbit_sleep_rem",
+            "fitbit_sleep_wake"
+        ],
+        "N_columns": 9
+    }
+}
