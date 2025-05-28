@@ -1,4 +1,4 @@
-# 🏠 Home IoT-based Depression & Anxiety Detection
+# 🏠 Multimodal Data-based Depression & Anxiety Detection in Everyday Life
 
 This repository supports the paper: > ** ... **
 
