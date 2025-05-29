@@ -1,4 +1,4 @@
-# Depression & Anxiety Detection Using Multimodal Data from Mobile, Wearable and Home IoT Sensors
+# Depression & Anxiety Detection Using Multimodal Data 
 
 This repository supports the paper: > **A Multimodal Sensor Fusion Approach Using Mobile, Wearable, and
 IoT Sensors for Mental Health Detection**
