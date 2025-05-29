@@ -1,4 +1,4 @@
-# 🏠 Depression & Anxiety Detection Using Multimodal Data from Mobile, Wearable and Home IoT Sensors
+# Depression & Anxiety Detection Using Multimodal Data from Mobile, Wearable and Home IoT Sensors
 
 This repository supports the paper: > **A Multimodal Sensor Fusion Approach Using Mobile, Wearable, and
 IoT Sensors for Mental Health Detection**
@@ -13,8 +13,56 @@ We provide extracted and preprocessed features (in ML models/FEATURES or DL mode
 
 🔒 The raw data (from mobile, wearable, and IoT sensors) is not publicly released due to privacy concerns.
 
+## 📋 Data Collection & Analysis
 
-## 📋 Mobile Data Preprocessing 
+### 🏠 Data Collected from Aqara Sensors
+| **Sensor Name**                        | **Data Field**                       |
+| -------------------------------------- | ------------------------------------ |
+| Aqara Vibration Sensor (DJT11LM)       | 1: Vibrate <br> 2: Tilt <br> 3: Drop |
+| Aqara Door & Window Sensor (MCCGQ11LM) | 0: Closed <br> 1: Open               |
+| Aqara Motion Sensor (RTCGQ11LM)        | 0: Unoccupied <br> 1: Occupied       |
+| Aqara Smart Plug (SP-EUC01)            | Cost energy (Wh)                     |
+
+
+### 🛏️ Data Collected from Withings Sleep Sensor
+| **Data Field**       | **Description**                                                          |
+| -------------------- | ------------------------------------------------------------------------ |
+| wake up duration     | Time spent awake (in seconds)                                            |
+| wake up count        | Number of times the user woke up in bed (not counting out-of-bed events) |
+| rem sleep duration   | Duration in REM sleep (in seconds)                                       |
+| total time in bed    | Total time spent in bed                                                  |
+| total sleep time     | Sum of light, deep, and REM durations                                    |
+| sleep efficiency     | Ratio of total sleep time to time in bed                                 |
+| sleep latency        | Time spent in bed before falling asleep                                  |
+| wake up latency      | Time spent in bed after waking up                                        |
+| waso                 | Time awake in bed after initially falling asleep                         |
+| nb rem episodes      | Number of REM phases during sleep                                        |
+| out of bed count     | Number of times user got out of bed                                      |
+| light sleep duration | Duration of light sleep (in seconds)                                     |
+| deep sleep duration  | Duration of deep sleep (in seconds)                                      |
+
+
+
+### 🎤 Sensor Data Collected from Smart Speaker System
+| **Sensor Type**                  | **Data Field**                                        | **Sampling Rate** |
+| -------------------------------- | ----------------------------------------------------- | ----------------- |
+| Smartphone - Camera              | Number of people                                      | 1 Hz              |
+| Smartphone - Microphone          | Noise (dB)                                            | 1 Hz              |
+| Smartphone - Light sensor        | Light (lx)                                            | 1 Hz              |
+| Smartphone - Microphone (Survey) | User voice                                            | Per survey        |
+| Air Quality Sensor (BSP02AIQ)    | Temperature (°C), Humidity (%), CO₂ (ppm), TVOC (ppb) | 1 Hz              |
+
+
+
+### 🗣️ Self-Reported Data Collected from Smart Speaker
+| **Category**       | **Questions**                                                                                                                                                              | **Answers**                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| Depression (PHQ-2) | 1. Over the past 1–2 hours, how often have you been bothered by little interest or pleasure in doing things? <br> 2. How often have you felt down, depressed, or hopeless? | Not at all (0) – Very frequently (3) |
+| Anxiety (GAD-2)    | 3. Over the past 1–2 hours, how often have you felt nervous, anxious, or on edge? <br> 4. How often have you been unable to stop or control worrying?                      | Not at all (0) – Very frequently (3) |
+
+
+
+### 📱 Mobile Data - Preprocessing 
 | **Type**               | **Raw Data**                   | **Preprocessing**                                                                                                                                                                                                                   |
 | ---------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Social interaction** | Call event                     | Filter negative and 0 duration                                                                                                                                                                                                      |
@@ -29,7 +77,7 @@ We provide extracted and preprocessed features (in ML models/FEATURES or DL mode
 |                        | Media events                   | Encode the categorical video, image, and all types of events to 1 as numeric values                                                                                                                                                 |
 
 
-## Mobile Extracted Features
+### 📱Mobile - Extracted Features
 
 | **Type**               | **Raw Data**            | **Information being aggregated into features**                                               | **Features**                                                                                                   |
 | ---------------------- | ----------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
