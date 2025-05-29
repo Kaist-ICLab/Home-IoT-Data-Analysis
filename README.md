@@ -63,43 +63,39 @@ We provide extracted and preprocessed features (in ML models/FEATURES or DL mode
 
 
 ### 📱 Mobile Data - Preprocessing 
-| **Type**               | **Raw Data**                   | **Preprocessing**                                                                                                                                                                                                                   |
-| ---------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Social interaction** | Call event                     | Filter negative and 0 duration                                                                                                                                                                                                      |
-|                        | Message event                  | Encode the categorical events to 1 as numeric values                                                                                                                                                                                |
-| **Physical activity**  | Accelerometer                  | Calculate the magnitude of accelerometer data                                                                                                                                                                                       |
-| **Context**            | Location                       | Calculate haversine distance between consecutive GPS recordings; cluster the GPS data for each user using POI clustering; label clusters with semantic labels (home, work, Google Map API labels, and none)                    |
-|                        | UltraViolet                    | Calculate UV exposure between consecutive UV recordings                                                                                                                                                                             |
-| **Phone usage**        | App usage                      | Recategorize apps into predefined categories, calculate app usage duration for each app usage session                                                                                                                         |
-|                        | Installed app                  | Calculate Jaccard similarity index between consecutively installed app names                                                                                                                                                        |
-|                        | Screen event                   | Calculate screen-on duration for each screen-on event session for each user                                                                                                                                                         |
-|                        | WiFi events                    | Calculate cosine, Euclidean, and Manhattan distance between consecutive WiFi RSSI; calculate Jaccard similarity index between consecutive WiFi BSSID                                                                                |
-|                        | Media events                   | Encode the categorical video, image, and all types of events to 1 as numeric values                                                                                                                                                 |
+| **Type**               | **Raw Data**  | **Preprocessing**                                                                                                         |
+| ---------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Social interaction** | Call event    | Filter negative and zero durations                                                                                        |
+|                        | Message event | Encode categorical events as numeric (e.g., 1)                                                                            |
+| **Physical activity**  | Accelerometer | Calculate magnitude from X, Y, Z axes                                                                                     |
+| **Context**            | Location      | Haversine distance between GPS points; POI-based clustering; assign semantic labels (e.g., home, work, Google Map labels) |
+|                        | UltraViolet   | Compute UV exposure between consecutive readings                                                                          |
+| **Phone usage**        | App usage     | Recategorize into predefined types; calculate duration per session                                                        |
+|                        | Installed app | Calculate Jaccard similarity between consecutively installed app sets                                                     |
+|                        | Screen event  | Calculate duration of screen-on sessions per user                                                                         |
+|                        | WiFi events   | Compute cosine, Euclidean, Manhattan distance between RSSI values; Jaccard similarity between consecutive BSSID sets      |
+|                        | Media events  | Encode video, image, and other event types as numeric values (e.g., 1)                                                    |
 
 
 ### 📱Mobile - Extracted Features
-
-| **Type**               | **Raw Data**            | **Information being aggregated into features**                                               | **Features**                                                                                                   |
-| ---------------------- | ----------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **Social interaction** | Call event              | Call duration and previous times contacted of the contact person                             | Numeric features, call frequency                                                                               |
-|                        | Message event           | Message sent, received, and all events including both sent and received events               | Numeric features                                                                                               |
-| **Physical activity**  | Accel.                  | X, Y, Z values, and magnitude                                                                | Numeric features                                                                                               |
-|                        | Activity transition     | ENTER\_WALKING, ENTER\_STILL, ENTER\_IN\_VEHICLE, ENTER\_ON\_BICYCLE, ENTER\_RUNNING events  | Categorical features                                                                                           |
-|                        | Physical activity event | Confidence of unknown, OnFoot, Walking, InVehicle, OnBicycle, Running, and Tilting           | Numeric features                                                                                               |
-| **Context**            | Location                | Distance traveled, location cluster, and location cluster semantic label                     | Numeric features for distance, categorical for location cluster and cluster label, number of locations visited |
-| **Time Info**          | Label timestamp         | Day of week, weekend or not, hour name                                                       | Categorical features                                                                                           |
-|                        | UltraViolet             | UV exposure, intensity                                                                       | Numeric features                                                                                               |
-|                        | Ambient light           | Ambient light brightness                                                                     | Numeric features                                                                                               |
-| **Phone usage**        | App usage               | Different types of app usage events and their duration                                       | Categorical features for app events and numeric features for usage duration                                    |
-|                        | Installed app           | Jaccard similarity index between consecutively installed app name                            | Numeric features                                                                                               |
-|                        | Screen event            | Screen events and screen on duration                                                         | Categorical for screen events and numeric for screen on duration                                               |
-|                        | OnOffEvent              | Phone power on/off events                                                                    | Categorical features                                                                                           |
-|                        | Network connectivity    | Network connected events                                                                     | Categorical features                                                                                           |
-|                        | Battery event           | Battery level, status, and temperature                                                       | Numeric features for battery level and temperature, categorical features for battery status                    |
-|                        | Data traffic            | Received and sent data in kbytes                                                             | Numeric features                                                                                               |
-|                        | WiFi events             | Three types of distances between consecutive RSSI and Jaccard similarity index between BSSID | Numeric features                                                                                               |
-|                        | Media events            | Video, image, and all types of events                                                        | Numeric features                                                                                               |
-|                        | System events           | Ringer mode types, power save event types, and mobile charge event types                     | Categorical features                                                                                           |
+| **Type**               | **Raw Data**         | **Information Being Aggregated**                            | **Features**                                                         |
+| ---------------------- | -------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Social interaction** | Call event           | Call duration and previous times contacted                  | Numeric features, call frequency                                     |
+|                        | Message event        | Messages sent, received, and total message events           | Numeric features                                                     |
+| **Physical activity**  | Accel.               | X, Y, Z values and magnitude                                | Numeric features                                                     |
+|                        | Activity transition  | ENTER\_WALKING, ENTER\_STILL, ENTER\_IN\_VEHICLE, etc.      | Categorical features                                                 |
+|                        | Activity event       | Confidence levels: OnFoot, InVehicle, Tilting, etc.         | Numeric features                                                     |
+| **Context**            | Location             | Distance traveled, location clusters, and semantic labels   | Numeric features for distance; categorical for clusters and labels   |
+| **Phone usage**        | App usage            | App usage types and durations                               | Categorical features (app events), numeric features (usage duration) |
+|                        | Installed app        | Jaccard similarity index of consecutively installed apps    | Numeric features                                                     |
+|                        | Screen event         | Screen on/off events and duration                           | Categorical (event type), numeric (duration)                         |
+|                        | OnOffEvent           | Phone power on/off                                          | Categorical features                                                 |
+|                        | Network connectivity | Network connected events                                    | Categorical features                                                 |
+|                        | Battery event        | Battery level, temperature, status                          | Numeric (level, temp); categorical (status)                          |
+|                        | Data traffic         | Mobile data usage in kB                                     | Numeric features                                                     |
+|                        | WiFi events          | Distances between RSSI values; Jaccard similarity of BSSIDs | Numeric features                                                     |
+|                        | Media events         | Event counts: image, video, all                             | Numeric features                                                     |
+|                        | System events        | Ringer mode, power saving state, charging events            | Categorical features                                                 |
 
 
 ## 🤖 Model Training
