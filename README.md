@@ -66,7 +66,7 @@ We provide extracted and preprocessed features (in ML models/FEATURES or DL mode
 | **Type**               | **Raw Data**  | **Preprocessing**                                                                                                         |
 | ---------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | **Social interaction** | Call event    | Filter negative and zero durations                                                                                        |
-|                        | Message event | Encode categorical events as numeric (e.g., 1)                                                                            |
+|                        | Message event | Encode the categorical events to 1 as numeric values                                                                      |
 | **Physical activity**  | Accelerometer | Calculate magnitude from X, Y, Z axes                                                                                     |
 | **Context**            | Location      | Haversine distance between GPS points; POI-based clustering; assign semantic labels (e.g., home, work, Google Map labels) |
 |                        | UltraViolet   | Compute UV exposure between consecutive readings                                                                          |
@@ -74,7 +74,7 @@ We provide extracted and preprocessed features (in ML models/FEATURES or DL mode
 |                        | Installed app | Calculate Jaccard similarity between consecutively installed app sets                                                     |
 |                        | Screen event  | Calculate duration of screen-on sessions per user                                                                         |
 |                        | WiFi events   | Compute cosine, Euclidean, Manhattan distance between RSSI values; Jaccard similarity between consecutive BSSID sets      |
-|                        | Media events  | Encode video, image, and other event types as numeric values (e.g., 1)                                                    |
+|                        | Media events  | EEncode the categorical video, image, and all types events to 1 as numeric values                                         |
 
 
 ### 📱Mobile - Extracted Features
