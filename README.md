@@ -69,7 +69,6 @@ We provide extracted and preprocessed features (in ML models/FEATURES or DL mode
 |                        | Message event | Encode the categorical events to 1 as numeric values                                                                      |
 | **Physical activity**  | Accelerometer | Calculate magnitude from X, Y, Z axes                                                                                     |
 | **Context**            | Location      | Haversine distance between GPS points; POI-based clustering; assign semantic labels (e.g., home, work, Google Map labels) |
-|                        | UltraViolet   | Compute UV exposure between consecutive readings                                                                          |
 | **Phone usage**        | App usage     | Recategorize into predefined types; calculate duration per session                                                        |
 |                        | Installed app | Calculate Jaccard similarity between consecutively installed app sets                                                     |
 |                        | Screen event  | Calculate duration of screen-on sessions per user                                                                         |
