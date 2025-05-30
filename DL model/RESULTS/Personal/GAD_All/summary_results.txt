@@ -1,0 +1,2 @@
+splitter=personalstratifiedkfold,dataset=All,modelname=conv1d,augment=Mixup(alpha=1.0),label=gad2_result_binary,auc=0.7000(σ=0.2332),acc=0.6974(σ=0.1674),f1=0.5197(σ=0.1545),bcc=0.5566(σ=0.1368),batch_size=64,epoch=50,alpha=1.0,mixup_ratio=0.5
+splitter=personalstratifiedkfold,dataset=All,modelname=fusion,augment=Mixup(alpha=1.0),label=gad2_result_binary,auc=0.6500(σ=0.2330),acc=0.6568(σ=0.1860),f1=0.5643(σ=0.1831),bcc=0.5968(σ=0.1869),batch_size=64,epoch=50,alpha=1.0,mixup_ratio=0.5

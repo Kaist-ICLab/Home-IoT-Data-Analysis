@@ -1,0 +1,23 @@
+LOSO | DATASET Phone | LABEL gad2_result_binary | MODEL conv1d | MIXUP True | SEED 42 | DEVICE cuda:1
+LOSO  1 | AUC: 0.3265 | ACC: 0.3929 | F1: 0.3729 | Balanced_ACC: 0.3929
+LOSO  2 | AUC: 0.5450 | ACC: 0.6667 | F1: 0.4000 | Balanced_ACC: 0.5000
+LOSO  3 | AUC: 0.7250 | ACC: 0.6724 | F1: 0.5818 | Balanced_ACC: 0.7050
+LOSO  4 | AUC: 0.2363 | ACC: 0.6414 | F1: 0.3908 | Balanced_ACC: 0.3811
+LOSO  5 | AUC: 0.7490 | ACC: 0.5312 | F1: 0.3469 | Balanced_ACC: 0.5000
+LOSO  7 | AUC: 0.4956 | ACC: 0.5584 | F1: 0.4965 | Balanced_ACC: 0.4981
+LOSO  8 | AUC: 0.5960 | ACC: 0.8961 | F1: 0.4726 | Balanced_ACC: 0.5000
+LOSO  9 | AUC: 0.6855 | ACC: 0.6129 | F1: 0.6092 | Balanced_ACC: 0.6217
+LOSO 10 | AUC: 0.7173 | ACC: 0.7736 | F1: 0.7211 | Balanced_ACC: 0.7092
+LOSO 11 | AUC: 0.2520 | ACC: 0.6504 | F1: 0.3941 | Balanced_ACC: 0.5000
+LOSO 16 | AUC: 0.8303 | ACC: 0.7308 | F1: 0.7271 | Balanced_ACC: 0.7667
+LOSO 17 | AUC: 0.6952 | ACC: 0.2821 | F1: 0.2795 | Balanced_ACC: 0.5230
+LOSO 18 | AUC: 0.7857 | ACC: 0.5882 | F1: 0.4711 | Balanced_ACC: 0.5214
+
+------------MEAN SUMMARY------------
+     AUC      ACC      F1     B-ACC
+μ: 0.5877   0.6152   0.4818   0.5476
+σ: 0.1953   0.1511   0.1352   0.1140
+
+X_train.shape[1]: 2905
+Execution time: 70.14 seconds
+

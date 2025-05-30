@@ -1,0 +1,1 @@
+splitter=loso,dataset=IoTVoice,modelname=fusion,augment=Mixup(alpha=1.0),label=gad2_result_binary,auc=0.5686(σ=0.1048),acc=0.4359(σ=0.1725),f1=0.3523(σ=0.1471),bcc=0.5080(σ=0.0647),batch_size=64,epoch=50,alpha=1.0,mixup_ratio=0.5

@@ -18,6 +18,7 @@ logger = logging.getLogger()
 logging.getLogger('hyperopt').setLevel(logging.ERROR)
 logging.getLogger('shap').setLevel(logging.ERROR)
 
+
 # Define metrics functions
 def calculate_accuracy(labels, outputs):
     predicted = (outputs > 0.5).float()
@@ -56,6 +57,7 @@ def save_pickle(data, file_path):
 
 models = {
     'conv1d': CNN1d,
+    'conv1dattn': CNN1dAttn,
     'fusion': FusionBase,
 }
 
@@ -63,43 +65,33 @@ def create_submodel(modelname):
     return models[modelname]()
 
 from collections import Counter
-def create_model(modelname='conv1dcat', y_train=None):
+def create_model(modelname='conv1d', ablation_study='All'):
     if modelname=="fusion":
-        if 'PhoneWearable' in args.dataset:
+        if ablation_study == "All":
             model = models[modelname](
                 models=[
                     create_submodel('conv1d'),
-                    create_submodel('conv1d')
-                    ],
-                input_slices=[slice(None, -9), slice(-9, None)],
+                    create_submodel('conv1d'),
+                    create_submodel('conv1d'),
+                    create_submodel('conv1dattn')
+                ],
+                input_slices=[slice(None, -351), slice(-351, -342), slice(-342, -182), slice(-182, None)],
             )
-        elif 'All' in args.dataset:
-            if args.wearable_modelname != 'None':
-                model = models[modelname](
-                    models=[
-                        create_submodel('conv1d'),
-                        create_submodel('conv1d'),
-                        create_submodel('conv1d'),
-                        create_submodel('conv1dattn')
-                    ],
-                    input_slices=[slice(None, -351), slice(-351, -342), slice(-342, -182), slice(-182, None)],
-                )
-            else:
-                model = models[modelname](
-                    models=[
-                        create_submodel('conv1d'),
-                        create_submodel('conv1d'),
-                        create_submodel('conv1dattn')
-                        ],
-                    input_slices=[slice(None, -342), slice(-342, -182), slice(-182, None)],
-                )
-        else:
+        elif ablation_study == "IoTVoice":
             model = models[modelname](
                 models=[
                     create_submodel('conv1d'),
                     create_submodel('conv1dattn')
                 ],
                 input_slices=[slice(None, -182), slice(-182, None)],
+            )
+        elif ablation_study == "PhoneWearable":
+            model = models[modelname](
+                models=[
+                    create_submodel('conv1d'),
+                    create_submodel('conv1d')
+                ],
+                input_slices=[slice(None, -351), slice(-351, None)],
             )
     else:
         model = create_submodel(modelname)
@@ -191,7 +183,7 @@ def evaluate_model(model, test_dataset, metrics):
     return accuracy, auc_score, f1, balanced_accuracy, (test_outputs > 0.5).float().cpu().numpy(), test_outputs.cpu().numpy(), test_labels.cpu().numpy()
 
 def log_initialization(splitter, label, modelname, device, args):
-    logger.info(f'{splitter.upper()} | DATASET {args.dataset} | LABEL {label} | MODEL {modelname} | MIXUP {args.mixup} | SEED {args.seed} | DEVICE {device}')
+    logger.info(f'{splitter.upper()} | DATASET {args.ablation_data} | LABEL {label} | MODEL {modelname} | MIXUP {args.mixup} | SEED {args.seed} | DEVICE {device}')
 
 def preprocess_data(df, label):
     single_class_groups = remove_user_with_skewed_label(df, label)
@@ -253,7 +245,6 @@ def train_test(label='phq2_result_binary', splitter='loso', modelname='conv1d', 
         shap_values_dict, shap_expected_values_dict, shap_X = {}, {}, pd.DataFrame()
 
     df = merged_df.copy()
-
     single_class_groups = remove_user_with_skewed_label(df, label)
     df = df[~df['uid'].isin(single_class_groups)]
 
@@ -289,10 +280,10 @@ def train_test(label='phq2_result_binary', splitter='loso', modelname='conv1d', 
         if splitter == 'personalstratifiedkfold':
             calculate_feature_deviation(X_train, X_test, [col for col in X_train.columns if col.startswith('aqara_')])
 
-        train_dataset = df_to_dataset_new(X_train, y_train, batch_size=batch_size, splitter=splitter)
+        train_dataset = df_to_dataset_new(X_train, y_train, batch_size=batch_size)
         test_dataset = df_to_dataset_new(X_test, y_test, batch_size=batch_size, shuffle=False)
 
-        model, optimizer, criterion, metrics = create_model(modelname, y_train)
+        model, optimizer, criterion, metrics = create_model(modelname, args.ablation_data)
         model = model.to(device)
 
         train_iteration(model, train_dataset, optimizer, criterion, epoch, use_mixup=args.mixup, alpha=args.alpha, mixup_ratio=args.mixup_ratio)
@@ -300,7 +291,7 @@ def train_test(label='phq2_result_binary', splitter='loso', modelname='conv1d', 
         # validate
         accuracy, auc_score, f1, balanced_accuracy, test_outputs, test_proba, test_labels = evaluate_model(model, test_dataset, metrics)
 
-        if splitter!='loso':
+        if splitter=='loso':
             accuracies.append(accuracy)
             auc_scores.append(auc_score)
             f1_scores.append(f1)
@@ -346,18 +337,13 @@ def train_test(label='phq2_result_binary', splitter='loso', modelname='conv1d', 
 
     # Result Sumamry
     augment = f'Mixup(alpha={args.alpha})' if args.mixup else '-'
-    result_text = f"splitter={args.splitter},dataset={args.dataset},modelname={modelname},augment={augment},label={label},auc={np.mean(auc_scores):.4f}(σ={np.std(auc_scores):.4f}),acc={np.mean(accuracies):.4f}(σ={np.std(accuracies):.4f}),f1={np.mean(f1_scores):.4f}(σ={np.std(f1_scores):.4f}),bcc={np.mean(balanced_accuracies):.4f}(σ={np.std(balanced_accuracies):.4f})"
+    result_text = f"splitter={args.splitter},dataset={args.ablation_data},modelname={modelname},augment={augment},label={label},auc={np.mean(auc_scores):.4f}(σ={np.std(auc_scores):.4f}),acc={np.mean(accuracies):.4f}(σ={np.std(accuracies):.4f}),f1={np.mean(f1_scores):.4f}(σ={np.std(f1_scores):.4f}),bcc={np.mean(balanced_accuracies):.4f}(σ={np.std(balanced_accuracies):.4f})"
     result_text += f",batch_size={args.batch_size},epoch={args.epoch},alpha={args.alpha},mixup_ratio={args.mixup_ratio}"
 
-    append_to_file(f'{args.log_file[:-4]}_results.txt', result_text)
-
-    ### Visualization ###
-    if args.viz_location:
-        if not os.path.exists(args.viz_location):
-            os.makedirs(args.viz_location)
+    append_to_file(f'{args.save_dir}/summary_results.txt', result_text)
 
     if args.shap:
-        shap_location = os.path.join(args.viz_location, 'shap')
+        shap_location = os.path.join(args.save_dir, 'shap')
         if not os.path.exists(shap_location):
             os.makedirs(shap_location)
 
@@ -375,43 +361,44 @@ def train_test(label='phq2_result_binary', splitter='loso', modelname='conv1d', 
 
         # Save SHAP
         plot_shap(shap_values_dict, shap_X, show_uid=False, figsize=(8, 6), plot_type='dot',
-                dataset=args.dataset, splitter=args.splitter, save_path=shap_location)
+                dataset=args.ablation_data, splitter=args.splitter, save_path=shap_location)
         plot_shap(shap_values_dict, shap_X, show_uid=False, figsize=(8, 6), plot_type='bar',
-                dataset=args.dataset, splitter=args.splitter, save_path=shap_location)
+                dataset=args.ablation_data, splitter=args.splitter, save_path=shap_location)
         for uid in list(shap_values_dict.keys())[:-1]:
             plot_shap(shap_values_dict, shap_X, show_uid=uid, figsize=(8, 6), plot_type='dot',
-                    dataset=args.dataset, splitter=args.splitter, save_path=shap_location)
+                    dataset=args.ablation_data, splitter=args.splitter, save_path=shap_location)
     
     if args.confusion_matrix:
         plot_confusion_matrix(y_real_dict, y_pred_dict,
-                            title=f'{splitter}-{label[:4]}-{args.dataset}-{modelname}',
-                            save_path=f'{args.viz_location}/confusion_matrix.png')
+                            title=f'{splitter}-{label[:4]}-{args.ablation_data}-{modelname}',
+                            save_path=f'{args.save_dir}/confusion_matrix.png')
 
     if args.auroc_curve:
         plot_auroc_curves(y_real_dict, y_proba_dict,
-                        title=f'{splitter}-{label[:4]}-{args.dataset}-{modelname}',
-                        save_path=f'{args.viz_location}/auroc_curves.png')
+                        title=f'{splitter}-{label[:4]}-{args.ablation_data}-{modelname}',
+                        save_path=f'{args.save_dir}/auroc_curves.png')
         
     if args.auroc_bar:
         plot_auroc_bar(y_real_dict, y_proba_dict,
-                    title=f'{splitter}-{label[:4]}-{args.dataset}-{modelname}',
-                    save_path=f'{args.viz_location}/auroc_bar.png')
+                    title=f'{splitter}-{label[:4]}-{args.ablation_data}-{modelname}',
+                    save_path=f'{args.save_dir}/auroc_bar.png')
 
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument("--dataset", type=str, default='All', help="final_df name")
     parser.add_argument("--label", type=str, default='phq2_result_binary', help="Label for the training")
     parser.add_argument("--splitter", type=str, default='loso', help="Splitter type for data splitting")
     parser.add_argument("--modelname", type=str, default='conv1d', help="Name of the model to use")
+
+    parser.add_argument("--ablation_data", type=str, default='All', help="A total of 7 options exists: All, IoT, Voice, Phone, Wearable, IoTVoice, PhoneWearable")
     #
     parser.add_argument("--batch_size", type=int, default=64, help="Batch size for training")
     parser.add_argument("--epoch", type=int, default=50, help="Number of epochs for training")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--gpu", type=int, default=0, help="Device")
-    parser.add_argument("--log_file", type=str, default='RESULTS/output.txt')
+    parser.add_argument("--save_dir", type=str, default='RESULTS', help="Directory to save results and models")
 
     parser.add_argument("--mixup", action='store_true', help="use mixup (default: False)")
     parser.add_argument("--alpha", type=float, default=1.0, help="Alpha value for Mixup")
@@ -423,23 +410,33 @@ if __name__ == '__main__':
     parser.add_argument("--auroc_curve", action='store_true', help="if you want to use AUROC, set this flag")
     parser.add_argument("--auroc_bar", action='store_true', help="if you want to use AUROC bar, set this flag")
 
-
     args = parser.parse_args()
 
-    file_handler = logging.FileHandler(args.log_file)
+    if not os.path.exists(args.save_dir):
+        os.makedirs(args.save_dir)
+
+    file_handler = logging.FileHandler(args.save_dir + '/log.txt')
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(logging.Formatter('%(message)s'))
     logger.addHandler(file_handler)
 
     seed_everything(args.seed)
 
-    dataset_path = f"DATASET/{args.splitter}/{args.dataset}.csv"
+    dataset_path = 'DATASET/df.csv'
+
     if not os.path.exists(dataset_path):
-        merged_df = get_dataset(dataset=args.dataset)
-        merged_df.to_csv(dataset_path, index=False)
-        exit()
+        merged_df = get_dataset(dataset_path=dataset_path)
     else:
         merged_df = pd.read_csv(dataset_path)
+    
+    merged_df = get_ablation_dataset(merged_df, args.ablation_data)
+    
+    # In the feature extraction, we extracted the deviation and comparison features
+    # However, we can not find them if we imagine the real-world scenario
+    # So, we remove them in the case of personal stratified k-fold
+    # Deviation will be re-calculated in the training process
+    if args.splitter == "personalstratifiedkfold":
+        merged_df = merged_df.drop(columns=[col for col in merged_df.columns if col.endswith(('deviation', 'comparison'))])
     
     device = torch.device(f'cuda:{args.gpu}' if torch.cuda.is_available() else 'cpu')
 
@@ -454,4 +451,4 @@ if __name__ == '__main__':
     end_time = time.time()
 
     elapsed_time = end_time - start_time
-    logger.info(f"Execution time: {elapsed_time:.4f} seconds\n")
+    logger.info(f"Execution time: {elapsed_time:.2f} seconds\n")

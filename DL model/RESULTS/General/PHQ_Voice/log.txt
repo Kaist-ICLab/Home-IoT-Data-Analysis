@@ -1,0 +1,21 @@
+LOSO | DATASET Voice | LABEL phq2_result_binary | MODEL conv1dattn | MIXUP True | SEED 42 | DEVICE cuda:0
+LOSO  1 | AUC: 0.4564 | ACC: 0.3929 | F1: 0.3524 | Balanced_ACC: 0.4128
+LOSO  2 | AUC: 0.6989 | ACC: 0.7000 | F1: 0.4118 | Balanced_ACC: 0.4773
+LOSO  3 | AUC: 0.4240 | ACC: 0.1379 | F1: 0.1212 | Balanced_ACC: 0.4444
+LOSO  5 | AUC: 0.4917 | ACC: 0.5938 | F1: 0.3725 | Balanced_ACC: 0.4750
+LOSO  6 | AUC: 0.4333 | ACC: 0.3056 | F1: 0.3007 | Balanced_ACC: 0.4500
+LOSO  7 | AUC: 0.4763 | ACC: 0.6104 | F1: 0.5645 | Balanced_ACC: 0.5637
+LOSO  9 | AUC: 0.4286 | ACC: 0.6774 | F1: 0.4038 | Balanced_ACC: 0.5000
+LOSO 11 | AUC: 0.5989 | ACC: 0.2602 | F1: 0.2065 | Balanced_ACC: 0.5000
+LOSO 16 | AUC: 0.5833 | ACC: 0.3077 | F1: 0.2353 | Balanced_ACC: 0.5000
+LOSO 17 | AUC: 0.4386 | ACC: 0.4615 | F1: 0.3903 | Balanced_ACC: 0.4637
+LOSO 18 | AUC: 0.3750 | ACC: 0.5882 | F1: 0.5296 | Balanced_ACC: 0.5694
+
+------------MEAN SUMMARY------------
+     AUC      ACC      F1     B-ACC
+μ: 0.4914   0.4578   0.3535   0.4869
+σ: 0.0918   0.1801   0.1263   0.0454
+
+X_train.shape[1]: 182
+Execution time: 26.03 seconds
+

@@ -39,20 +39,6 @@ def get_part_of_day(hour):
         return 3 #Evening
     else:
         return 4 #Night
-    
-# Calculating variance for each 'aqara_' column based on uid
-def load_aqara_data(file_name):
-    aqara_features = pd.read_csv(file_name, index_col=None)
-    aqara_columns_only = [col for col in aqara_features.columns if col.startswith('aqara_')]
-
-    for col in aqara_columns_only:
-        mean_per_uid = aqara_features.groupby('uid')[col].transform('mean')
-        aqara_features[f'{col}_variance'] = aqara_features[col] - mean_per_uid
-        aqara_features[f'{col}_comparison'] = (aqara_features[col] > mean_per_uid).astype(int) - (aqara_features[col] < mean_per_uid).astype(int)
-
-    aqara_features['eating_routine'] = ((aqara_features['aqara_fridge'] >= 1) | (aqara_features['aqara_microwave'] >= 1)).astype(int)
-    aqara_features['chores_routine'] = ((aqara_features['aqara_cleaner'] >= 1) | (aqara_features['aqara_washer'] >= 1)).astype(int)
-    return aqara_features
 
 def load_aqara_data_updated(file_name, hour, yesterday):
     aqara_data = pd.read_csv(file_name, index_col=None)
@@ -68,6 +54,15 @@ def load_aqara_data_updated(file_name, hour, yesterday):
     # Identify aqara columns only (after filtering by hour)
     aqara_columns_only = [col for col in aqara_features.columns if col.startswith('aqara_')]
 
+    for col in aqara_columns_only:
+        # Convert the column to numeric, setting errors='coerce' will turn invalid parsing into NaN
+        aqara_features[col] = pd.to_numeric(aqara_features[col], errors='coerce')
+        # Calculate the mean per uid
+        mean_per_uid = aqara_features.groupby('uid')[col].transform('mean')
+        # Calculate variance and comparison
+        aqara_features[f'{col}_deviation'] = aqara_features[col] - mean_per_uid
+        aqara_features[f'{col}_comparison'] = (aqara_features[col] > mean_per_uid).astype(int) - (aqara_features[col] < mean_per_uid).astype(int)
+            
     if yesterday == False:
         fridge_columns = [col for col in aqara_columns_only if 'fridge_ImmediatePast' in col]
         microwave_columns = [col for col in aqara_columns_only if 'microwave_ImmediatePast' in col]
@@ -112,119 +107,24 @@ def load_aqara_data_updated(file_name, hour, yesterday):
                         (aqara_features[cleaner_col] >= 1) |
                         (aqara_features[washer_col] >= 1)
                     ).astype(int)
+
     return aqara_features
 
 
 def load_smartphone_data(file_name):
     smartphone = load(file_name)
     smartphone_feature, _, uids, dates = smartphone
+
     smartphone_feature = smartphone_feature.apply(lambda x: x.astype(int) if x.dtype == 'bool' else x.astype('float64'), axis=0)
+
     df_smartphone = pd.concat([smartphone_feature, pd.DataFrame(uids.tolist(), columns=['uid']), pd.DataFrame(dates.tolist(), columns=['timestamp'])], axis=1)
     df_smartphone['uid'] = df_smartphone['uid'].str.replace('P', '').astype('int64')
     df_smartphone['hour'] = df_smartphone['timestamp'].dt.hour
     df_smartphone['part_of_day'] = df_smartphone['hour'].apply(get_part_of_day)
     df_smartphone['timestamp'] = df_smartphone['timestamp'].apply(to_unix_timestamp)
-    # df_smartphone: LOC_LABEL#RLV_SUP=eating#ImmediatePast_60,LOC_LABEL#RLV_SUP=home#ImmediatePast_60,LOC_LABEL#RLV_SUP=work#ImmediatePast_60,LOC_LABEL#RLV_SUP=social#ImmediatePast_60,LOC_LABEL#RLV_SUP=others#ImmediatePast_60 열 중 LOC_LABEL#RLV_SUP=eating#ImmediatePast_60 이 가장 큰 값을 가지는 경우 1, 아니면 0
-    df_smartphone['eating_routine_immediatePast_60'] = (
-        df_smartphone['LOC_LABEL#RLV_SUP=eating#ImmediatePast_60'] == df_smartphone[
-            [
-                'LOC_LABEL#RLV_SUP=eating#ImmediatePast_60',
-                'LOC_LABEL#RLV_SUP=home#ImmediatePast_60',
-                'LOC_LABEL#RLV_SUP=work#ImmediatePast_60',
-                'LOC_LABEL#RLV_SUP=social#ImmediatePast_60',
-                'LOC_LABEL#RLV_SUP=others#ImmediatePast_60'
-            ]
-        ].max(axis=1)
-        ).astype(int)
-    df_smartphone['eating_routine_YesterdayDawn'] = (
-        df_smartphone['LOC_LABEL#RLV_SUP=eating#YesterdayDawn'] == df_smartphone[
-            [
-                'LOC_LABEL#RLV_SUP=eating#YesterdayDawn',
-                'LOC_LABEL#RLV_SUP=home#YesterdayDawn',
-                'LOC_LABEL#RLV_SUP=work#YesterdayDawn',
-                'LOC_LABEL#RLV_SUP=social#YesterdayDawn',
-                'LOC_LABEL#RLV_SUP=others#YesterdayDawn'
-            ]
-        ].max(axis=1)
-        ).astype(int)
-    df_smartphone['eating_routine_YesterdayMorning'] = (
-        df_smartphone['LOC_LABEL#RLV_SUP=eating#YesterdayMorning'] == df_smartphone[
-            [
-                'LOC_LABEL#RLV_SUP=eating#YesterdayMorning',
-                'LOC_LABEL#RLV_SUP=home#YesterdayMorning',
-                'LOC_LABEL#RLV_SUP=work#YesterdayMorning',
-                'LOC_LABEL#RLV_SUP=social#YesterdayMorning',
-                'LOC_LABEL#RLV_SUP=others#YesterdayMorning'
-            ]
-        ].max(axis=1)
-        ).astype(int)
-    df_smartphone['eating_routine_YesterdayAfternoon'] = (
-        df_smartphone['LOC_LABEL#RLV_SUP=eating#YesterdayAfternoon'] == df_smartphone[
-            [
-                'LOC_LABEL#RLV_SUP=eating#YesterdayAfternoon',
-                'LOC_LABEL#RLV_SUP=home#YesterdayAfternoon',
-                'LOC_LABEL#RLV_SUP=work#YesterdayAfternoon',
-                'LOC_LABEL#RLV_SUP=social#YesterdayAfternoon',
-                'LOC_LABEL#RLV_SUP=others#YesterdayAfternoon'
-            ]
-        ].max(axis=1)
-        ).astype(int)
-    df_smartphone['eating_routine_YesterdayEvening'] = (
-        df_smartphone['LOC_LABEL#RLV_SUP=eating#YesterdayEvening'] == df_smartphone[
-            [
-                'LOC_LABEL#RLV_SUP=eating#YesterdayEvening',
-                'LOC_LABEL#RLV_SUP=home#YesterdayEvening',
-                'LOC_LABEL#RLV_SUP=work#YesterdayEvening',
-                'LOC_LABEL#RLV_SUP=social#YesterdayEvening',
-                'LOC_LABEL#RLV_SUP=others#YesterdayEvening'
-            ]
-        ].max(axis=1)
-        ).astype(int)
-    df_smartphone['eating_routine_YesterdayNight'] = (
-        df_smartphone['LOC_LABEL#RLV_SUP=eating#YesterdayNight'] == df_smartphone[
-            [
-                'LOC_LABEL#RLV_SUP=eating#YesterdayNight',
-                'LOC_LABEL#RLV_SUP=home#YesterdayNight',
-                'LOC_LABEL#RLV_SUP=work#YesterdayNight',
-                'LOC_LABEL#RLV_SUP=social#YesterdayNight',
-                'LOC_LABEL#RLV_SUP=others#YesterdayNight'
-            ]
-        ].max(axis=1)
-        ).astype(int)
-    # Today Epoch feature removed
+
     df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='_Today')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='#SKW')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='#KUR')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='#BEP')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='#TSC')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='#ETP')))]
-### 우울과 관련 없어보이는 features
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='LOC_CLS#DSC')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='LOC_LABEL#DSC')))]
-    # Battery.csv
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='BAT_STA')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='BAT_LEV')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='BAT_TMP')))]
-    # DataTraffic.csv
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='CON')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='DAT')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='WIF')))]
-    # InstalledApp.csv
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='INS_JAC')))]
-    # MediaEvent.csv
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='MED_VID')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='MED_IMG')))]
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='MED_ALL')))]
-    # RingerModeEvent.csv
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='RNG')))]
-    # Notification.csv
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='NOT')))]
-    # PowerSaveEvent.csv
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='PWS')))]
-    # PhoneStateEvent.csv
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='PHS')))]
-    # 'BTS': BatteryState,
-    df_smartphone = df_smartphone[df_smartphone.columns.drop(list(df_smartphone.filter(regex='BTS')))]
+
     return df_smartphone
 
 def load_label_data(file_name):
@@ -249,7 +149,7 @@ def data_sources_combinations(base_df, data_sources):
     return merged_df
 
 
-def get_dataset(dataset='All', dataset_path='DATASET/All'):
+def get_dataset(dataset_path='DATASET/df.csv'):
     df_label = load_label_data('FEATURES/label_2023.csv')
 
     df_audio = pd.read_csv('FEATURES/librosa_features.csv')
@@ -257,6 +157,7 @@ def get_dataset(dataset='All', dataset_path='DATASET/All'):
     df_bluSensor = pd.read_csv('FEATURES/bluSensor_features_15min.csv', index_col=None)
     df_fitbit = pd.read_csv('FEATURES/fitbit_features_24h.csv', index_col=None)
 
+    # if spliter == 'personalstratifiedkfold', deviation and comparison columns are not calculated
     df_aqara_before = load_aqara_data_updated('FEATURES/aqara_before_1h_3h_6h_12h_and.csv', 1, yesterday=False)
     df_aqara_yesterday = load_aqara_data_updated('FEATURES/aqara_yesterday_12h.csv', 12, yesterday=True)
     
@@ -280,13 +181,12 @@ def get_dataset(dataset='All', dataset_path='DATASET/All'):
 
     data_sources = [
         ## DEMOGRAPHIC DATA ##
-        (df_demo, ['uid'], None, None),                                        # demographic
+        # (df_demo, ['uid'], None, None),                                        # demographic
 
         ## PHONE DATA ##
         (df_smartphone, ['uid', 'timestamp'], None, None),                     # Smartphone 
         
         ## WEARABLE DATA ##
-        (df_fitbit, ['uid', 'timestamp'], None, None),                         # Fitbit
         (df_fitbit, ['uid', 'timestamp'], None, 0),                            # Fitbit 
 
         ## IOT DATA ##
@@ -312,8 +212,8 @@ def get_dataset(dataset='All', dataset_path='DATASET/All'):
 
     merged_df = merged_df.set_index('timestamp').sort_index()
 
-    if 'chromagram_1' not in merged_df.columns:
-        merged_df = pd.merge(merged_df, df_audio[df_audio['duration'] > 0], on=['uid', 'timestamp'], how='left').dropna().iloc[:,:-182]
+    # if 'chromagram_1' not in merged_df.columns:
+    #     merged_df = pd.merge(merged_df, df_audio[df_audio['duration'] > 0], on=['uid', 'timestamp'], how='left').dropna().iloc[:,:-182]
 
     df_info_dict = {
         'shape': merged_df.shape,
@@ -328,9 +228,10 @@ def get_dataset(dataset='All', dataset_path='DATASET/All'):
         }
         df_info_dict[f'source_{i+1}'] = info_dict
 
-    with open(f'{dataset_path}.json', 'w') as json_file:
+    with open(f'{dataset_path[:-4]}.json', 'w') as json_file:
         json.dump(df_info_dict, json_file, indent=4)
-    merged_df.to_csv(f'{dataset_path}.csv', index=False)
+    merged_df.to_csv(dataset_path, index=False)
+    print(f"Dataset saved to {dataset_path}")
     return merged_df
 
 def remove_user_with_skewed_label(data, label):
@@ -340,3 +241,39 @@ def remove_user_with_skewed_label(data, label):
     users_to_remove = label_ratios[(label_ratios < 0.1) | (label_ratios > 0.9)].index
 
     return users_to_remove
+
+def get_ablation_dataset(df, ablation_data):
+    main_cols = [
+        'uid',
+        'phq2_result', 'gad2_result', 'stress_result', 'posNeg_result', 'arousal_result',
+        'phq2_result_binary', 'gad2_result_binary', 'stress_result_binary', 'posNeg_result_binary', 'arousal_result_binary'
+    ]
+
+    feature_patterns = {
+        'IoT': 'aqara|withings|bluSensor',
+        'Voice': r'\bduration\b|word_count|chromagram|melspectrogram|mfcc',
+        'Wearable': 'fitbit',
+        'IoTVoice': 'aqara|withings|bluSensor|\bduration\b|word_count|chromagram|melspectrogram|mfcc',
+    }
+
+    if ablation_data == 'All':
+        return df
+
+    elif ablation_data in feature_patterns:
+        selected = list(df.columns[df.columns.str.contains(feature_patterns[ablation_data])])
+        return df.loc[:, main_cols + selected]
+
+    elif ablation_data == 'Phone':
+        exclude_patterns = '|'.join([feature_patterns[k] for k in ['IoT', 'Voice', 'Wearable']])
+        excluded_cols = df.columns[df.columns.str.contains(exclude_patterns)]
+        selected = [col for col in df.columns if col not in excluded_cols]
+        return df.loc[:, selected]
+
+    elif ablation_data == 'PhoneWearable':
+        exclude_patterns = '|'.join([feature_patterns[k] for k in ['IoT', 'Voice']])
+        excluded_cols = df.columns[df.columns.str.contains(exclude_patterns)]
+        selected = [col for col in df.columns if col not in excluded_cols]
+        return df.loc[:, selected]
+
+    else:
+        raise ValueError(f"Unknown ablation data type: {ablation_data}")

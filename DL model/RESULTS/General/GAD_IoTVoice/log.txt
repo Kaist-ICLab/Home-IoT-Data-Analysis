@@ -1,0 +1,23 @@
+LOSO | DATASET IoTVoice | LABEL gad2_result_binary | MODEL fusion | MIXUP True | SEED 42 | DEVICE cuda:1
+LOSO  1 | AUC: 0.4439 | ACC: 0.4643 | F1: 0.4581 | Balanced_ACC: 0.4643
+LOSO  2 | AUC: 0.6850 | ACC: 0.3667 | F1: 0.3040 | Balanced_ACC: 0.5250
+LOSO  3 | AUC: 0.6900 | ACC: 0.1552 | F1: 0.1427 | Balanced_ACC: 0.5100
+LOSO  4 | AUC: 0.5274 | ACC: 0.4690 | F1: 0.4298 | Balanced_ACC: 0.5433
+LOSO  5 | AUC: 0.5412 | ACC: 0.5312 | F1: 0.3469 | Balanced_ACC: 0.5000
+LOSO  7 | AUC: 0.5444 | ACC: 0.3506 | F1: 0.2596 | Balanced_ACC: 0.5000
+LOSO  8 | AUC: 0.3514 | ACC: 0.1299 | F1: 0.1299 | Balanced_ACC: 0.3487
+LOSO  9 | AUC: 0.5402 | ACC: 0.5323 | F1: 0.3474 | Balanced_ACC: 0.5000
+LOSO 10 | AUC: 0.7108 | ACC: 0.6792 | F1: 0.6374 | Balanced_ACC: 0.6397
+LOSO 11 | AUC: 0.6285 | ACC: 0.6098 | F1: 0.5868 | Balanced_ACC: 0.5924
+LOSO 16 | AUC: 0.4909 | ACC: 0.5769 | F1: 0.3659 | Balanced_ACC: 0.5000
+LOSO 17 | AUC: 0.5378 | ACC: 0.2137 | F1: 0.2005 | Balanced_ACC: 0.4809
+LOSO 18 | AUC: 0.7000 | ACC: 0.5882 | F1: 0.3704 | Balanced_ACC: 0.5000
+
+------------MEAN SUMMARY------------
+     AUC      ACC      F1     B-ACC
+μ: 0.5686   0.4359   0.3523   0.5080
+σ: 0.1048   0.1725   0.1471   0.0647
+
+X_train.shape[1]: 341
+Execution time: 66.81 seconds
+

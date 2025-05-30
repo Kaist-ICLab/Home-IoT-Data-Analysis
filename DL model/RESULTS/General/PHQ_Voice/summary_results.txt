@@ -1,0 +1,1 @@
+splitter=loso,dataset=Voice,modelname=conv1dattn,augment=Mixup(alpha=1.0),label=phq2_result_binary,auc=0.4914(σ=0.0918),acc=0.4578(σ=0.1801),f1=0.3535(σ=0.1263),bcc=0.4869(σ=0.0454),batch_size=64,epoch=50,alpha=1.0,mixup_ratio=0.5

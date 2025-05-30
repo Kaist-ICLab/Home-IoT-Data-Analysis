@@ -1,0 +1,1 @@
+splitter=loso,dataset=Wearable,modelname=conv1d,augment=Mixup(alpha=1.0),label=phq2_result_binary,auc=0.5457(σ=0.1098),acc=0.5470(σ=0.1539),f1=0.4144(σ=0.1231),bcc=0.5314(σ=0.0768),batch_size=64,epoch=50,alpha=1.0,mixup_ratio=0.5

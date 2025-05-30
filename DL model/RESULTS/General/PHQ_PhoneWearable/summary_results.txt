@@ -1,0 +1,1 @@
+splitter=loso,dataset=PhoneWearable,modelname=fusion,augment=Mixup(alpha=1.0),label=phq2_result_binary,auc=0.5731(σ=0.1491),acc=0.5501(σ=0.1625),f1=0.4742(σ=0.1226),bcc=0.5353(σ=0.1159),batch_size=64,epoch=50,alpha=1.0,mixup_ratio=0.5

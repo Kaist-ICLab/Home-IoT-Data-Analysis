@@ -1,0 +1,21 @@
+LOSO | DATASET PhoneWearable | LABEL phq2_result_binary | MODEL fusion | MIXUP True | SEED 42 | DEVICE cuda:0
+LOSO  1 | AUC: 0.4256 | ACC: 0.5714 | F1: 0.4286 | Balanced_ACC: 0.5385
+LOSO  2 | AUC: 0.5852 | ACC: 0.7000 | F1: 0.6306 | Balanced_ACC: 0.6364
+LOSO  3 | AUC: 0.7279 | ACC: 0.8621 | F1: 0.6282 | Balanced_ACC: 0.6009
+LOSO  5 | AUC: 0.4083 | ACC: 0.4062 | F1: 0.4010 | Balanced_ACC: 0.4083
+LOSO  6 | AUC: 0.6167 | ACC: 0.5000 | F1: 0.4375 | Balanced_ACC: 0.5000
+LOSO  7 | AUC: 0.6259 | ACC: 0.6494 | F1: 0.3937 | Balanced_ACC: 0.5000
+LOSO  9 | AUC: 0.6083 | ACC: 0.6774 | F1: 0.6400 | Balanced_ACC: 0.6440
+LOSO 11 | AUC: 0.7946 | ACC: 0.5285 | F1: 0.5284 | Balanced_ACC: 0.6813
+LOSO 16 | AUC: 0.7639 | ACC: 0.5385 | F1: 0.5357 | Balanced_ACC: 0.6667
+LOSO 17 | AUC: 0.3582 | ACC: 0.2650 | F1: 0.2491 | Balanced_ACC: 0.3510
+LOSO 18 | AUC: 0.3889 | ACC: 0.3529 | F1: 0.3439 | Balanced_ACC: 0.3611
+
+------------MEAN SUMMARY------------
+     AUC      ACC      F1     B-ACC
+μ: 0.5731   0.5501   0.4742   0.5353
+σ: 0.1491   0.1625   0.1226   0.1159
+
+X_train.shape[1]: 2914
+Execution time: 53.84 seconds
+

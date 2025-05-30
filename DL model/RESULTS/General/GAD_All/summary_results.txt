@@ -1,0 +1,2 @@
+splitter=loso,dataset=All,modelname=fusion,augment=Mixup(alpha=1.0),label=gad2_result_binary,auc=0.6166(σ=0.1474),acc=0.6344(σ=0.1203),f1=0.4763(σ=0.0927),bcc=0.5401(σ=0.0747),batch_size=64,epoch=50,alpha=1.0,mixup_ratio=0.5
+splitter=loso,dataset=All,modelname=conv1d,augment=Mixup(alpha=1.0),label=gad2_result_binary,auc=0.6337(σ=0.1738),acc=0.6720(σ=0.1244),f1=0.5309(σ=0.1353),bcc=0.5976(σ=0.1260),batch_size=64,epoch=50,alpha=1.0,mixup_ratio=0.5

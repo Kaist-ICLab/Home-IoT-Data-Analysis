@@ -1,0 +1,46 @@
+LOSO | DATASET All | LABEL gad2_result_binary | MODEL fusion | MIXUP True | SEED 42 | DEVICE cuda:1
+LOSO  1 | AUC: 0.4388 | ACC: 0.4643 | F1: 0.4026 | Balanced_ACC: 0.4643
+LOSO  2 | AUC: 0.7000 | ACC: 0.6667 | F1: 0.4000 | Balanced_ACC: 0.5000
+LOSO  3 | AUC: 0.7600 | ACC: 0.8103 | F1: 0.4476 | Balanced_ACC: 0.4700
+LOSO  4 | AUC: 0.3496 | ACC: 0.8414 | F1: 0.4569 | Balanced_ACC: 0.5000
+LOSO  5 | AUC: 0.6863 | ACC: 0.5312 | F1: 0.3469 | Balanced_ACC: 0.5000
+LOSO  7 | AUC: 0.4911 | ACC: 0.5195 | F1: 0.5182 | Balanced_ACC: 0.5533
+LOSO  8 | AUC: 0.5109 | ACC: 0.6494 | F1: 0.4793 | Balanced_ACC: 0.5281
+LOSO  9 | AUC: 0.6823 | ACC: 0.5484 | F1: 0.4833 | Balanced_ACC: 0.5737
+LOSO 10 | AUC: 0.4967 | ACC: 0.4528 | F1: 0.4528 | Balanced_ACC: 0.5196
+LOSO 11 | AUC: 0.5869 | ACC: 0.6504 | F1: 0.3941 | Balanced_ACC: 0.5000
+LOSO 16 | AUC: 0.9030 | ACC: 0.7308 | F1: 0.7271 | Balanced_ACC: 0.7667
+LOSO 17 | AUC: 0.6675 | ACC: 0.7350 | F1: 0.5735 | Balanced_ACC: 0.5749
+LOSO 18 | AUC: 0.7429 | ACC: 0.6471 | F1: 0.5096 | Balanced_ACC: 0.5714
+
+------------MEAN SUMMARY------------
+     AUC      ACC      F1     B-ACC
+μ: 0.6166   0.6344   0.4763   0.5401
+σ: 0.1474   0.1203   0.0927   0.0747
+
+X_train.shape[1]: 3256
+Execution time: 139.16 seconds
+
+LOSO | DATASET All | LABEL gad2_result_binary | MODEL conv1d | MIXUP True | SEED 42 | DEVICE cuda:1
+LOSO  1 | AUC: 0.4694 | ACC: 0.5357 | F1: 0.4081 | Balanced_ACC: 0.5357
+LOSO  2 | AUC: 0.7050 | ACC: 0.6000 | F1: 0.5833 | Balanced_ACC: 0.6000
+LOSO  3 | AUC: 0.8425 | ACC: 0.7931 | F1: 0.7175 | Balanced_ACC: 0.8800
+LOSO  4 | AUC: 0.6151 | ACC: 0.8414 | F1: 0.4569 | Balanced_ACC: 0.5000
+LOSO  5 | AUC: 0.7020 | ACC: 0.5312 | F1: 0.3469 | Balanced_ACC: 0.5000
+LOSO  7 | AUC: 0.5037 | ACC: 0.5065 | F1: 0.4745 | Balanced_ACC: 0.4752
+LOSO  8 | AUC: 0.6069 | ACC: 0.8961 | F1: 0.4726 | Balanced_ACC: 0.5000
+LOSO  9 | AUC: 0.6416 | ACC: 0.5968 | F1: 0.5916 | Balanced_ACC: 0.6066
+LOSO 10 | AUC: 0.6716 | ACC: 0.6415 | F1: 0.6221 | Balanced_ACC: 0.6430
+LOSO 11 | AUC: 0.2526 | ACC: 0.6504 | F1: 0.3941 | Balanced_ACC: 0.5000
+LOSO 16 | AUC: 0.9515 | ACC: 0.7692 | F1: 0.7679 | Balanced_ACC: 0.8000
+LOSO 17 | AUC: 0.7909 | ACC: 0.7863 | F1: 0.6951 | Balanced_ACC: 0.7287
+LOSO 18 | AUC: 0.4857 | ACC: 0.5882 | F1: 0.3704 | Balanced_ACC: 0.5000
+
+------------MEAN SUMMARY------------
+     AUC      ACC      F1     B-ACC
+μ: 0.6337   0.6720   0.5309   0.5976
+σ: 0.1738   0.1244   0.1353   0.1260
+
+X_train.shape[1]: 3256
+Execution time: 79.17 seconds
+

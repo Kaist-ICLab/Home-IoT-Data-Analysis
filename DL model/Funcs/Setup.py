@@ -5,23 +5,6 @@ import numpy as np
 import pytz
 from sklearn.feature_selection import VarianceThreshold
 
-# def binarize_by_user(data, threshold = 2, personalized = False, uids = None):
-#     if personalized:
-#         tmp = pd.DataFrame(dict(zip(['label', 'uid'], [data, uids])), index=None)
-#         mean_values = tmp.groupby('uid')['label'].mean().to_dict()
-#         def binarize(row):
-#             uid = row['uid']
-#             value = row['label']
-#             mean_value = mean_values[uid]
-#             if value >= mean_value:
-#                 return 1
-#             else:
-#                 return 0
-#         data = tmp.apply(binarize, axis=1)
-#     else:
-#         data = (data > threshold).astype(int)
-#     return data
-
 def binarize_by_user(df):
     labels = ['phq2_result', 'gad2_result', 'stress_result', 'posNeg_result', 'arousal_result']
     
@@ -37,15 +20,6 @@ def binarize_by_user(df):
         df[f'{label}_binary'] = df.apply(binarize, axis=1)
     return df
 
-
-# def binarize_by_range(df):
-#     df['phq2_result_binary'] = df['phq2_result'].apply(lambda x: 0 if x == 0 else 1)
-#     df['gad2_result_binary'] = df['gad2_result'].apply(lambda x: 0 if x == 0 else 1)
-#     df['stress_result_binary'] = df['stress_result'].apply(lambda x: 0 if x <= 2 else 1)
-#     df['posNeg_result_binary'] = df['posNeg_result'].apply(lambda x: 0 if x <= 2 else 1)
-#     df['arousal_result_binary'] = df['arousal_result'].apply(lambda x: 0 if x <= 2 else 1)
-
-#     return df
 
 def binarize_by_range(df):
     df['phq2_result_binary'] = df['phq2_result'].apply(lambda x: 0 if x < 2 else 1)
