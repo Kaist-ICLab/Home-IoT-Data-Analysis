@@ -1,2 +1,10 @@
-cloudpickle
-shap
+torch>=1.9.0
+torchvision>=0.10.0
+numpy>=1.19.2
+pandas>=1.2.4
+scikit-learn>=0.24.2
+matplotlib>=3.4.3
+seaborn>=0.11.2
+cloudpickle>=2.0.0
+shap>=0.40.0
+tqdm>=4.62.3
